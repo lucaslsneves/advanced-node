@@ -1,24 +1,23 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
-    "target" : "ES2019",
-    "skipLibCheck": true,
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
+    "rootDirs": ["src", "tests"],
+    "target": "es2021",
     "sourceMap": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
     "baseUrl": "src",
     "paths": {
-      "@/*" : ["*"],
+      "@/*": ["*"],
       "@/tests/*": ["../tests/*"]
     },
-    "strict": true
-   // "strictNullChecks": true,
-   // "strictFunctionTypes": true,
-   // "strictPropertyInitialization": true,
-   // "noImplicitAny": true
+    "strict": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
-  "include": ["src","tests"]
+  "include": ["src", "tests"]
 }
+
