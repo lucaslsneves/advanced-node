@@ -2,12 +2,13 @@ import { FacebookAuthentication } from '@/domain/features'
 import { AuthenticationError } from '@/domain/errors'
 
 import { LoadFacebookUserApi } from '@/data/contracts/apis'
-import { LoadUserAccountRepo } from '@/data/contracts/repos'
+import { LoadUserAccountRepo, CreateFacebookAccountRepo } from '@/data/contracts/repos'
 
 export class FacebookAuthenticationService {
   constructor (
     private readonly loadFacebookUserApi: LoadFacebookUserApi,
-    private readonly loadUserAccountRepo: LoadUserAccountRepo
+    private readonly loadUserAccountRepo: LoadUserAccountRepo,
+    private readonly createFacebookAccountRepo: CreateFacebookAccountRepo
   ) {}
 
   async perform (params: FacebookAuthentication.Params): Promise<AuthenticationError> {
@@ -15,6 +16,7 @@ export class FacebookAuthenticationService {
 
     if (fbData !== undefined) {
       await this.loadUserAccountRepo.load({ email: fbData.email })
+      await this.createFacebookAccountRepo.createFromFacebook(fbData)
     }
 
     return new AuthenticationError()
