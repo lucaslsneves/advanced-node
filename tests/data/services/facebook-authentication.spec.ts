@@ -5,11 +5,11 @@ import { AuthenticationError } from '@/domain/errors'
 import { FacebookAuthenticationService } from '@/data/services'
 
 import { LoadFacebookUserApi } from '@/data/contracts/apis'
-import { LoadUserAccountRepo, CreateFacebookAccountRepo } from '@/data/contracts/repos'
+import { LoadUserAccountRepo, CreateFacebookAccountRepo, UpdateFacebookAccountRepo } from '@/data/contracts/repos'
 
 describe('FacebookAuthentication Service', () => {
   let facebookApi: MockProxy<LoadFacebookUserApi>
-  let userAccountRepo: MockProxy<LoadUserAccountRepo & CreateFacebookAccountRepo>
+  let userAccountRepo: MockProxy<LoadUserAccountRepo & CreateFacebookAccountRepo & UpdateFacebookAccountRepo>
   let sut: FacebookAuthenticationService
   const token = 'any_token'
 
@@ -47,7 +47,7 @@ describe('FacebookAuthentication Service', () => {
     expect(userAccountRepo.load).toHaveBeenCalledTimes(1)
   })
 
-  it('should call CreateUserAccountRepo with correct params only once when LoadUserAccountRepo returns undefined', async () => {
+  it('should call CreateFacebookAccountRepo with correct params only once when LoadUserAccountRepo returns undefined', async () => {
     userAccountRepo.load.mockResolvedValueOnce(undefined)
 
     await sut.perform({ token })
@@ -58,5 +58,21 @@ describe('FacebookAuthentication Service', () => {
       facebookId: 'any_fb_id'
     })
     expect(userAccountRepo.createFromFacebook).toHaveBeenCalledTimes(1)
+  })
+
+  it('should call UpdateFacebookAccountRepo with correct params only once when LoadUserAccountRepo returns data', async () => {
+    userAccountRepo.load.mockResolvedValueOnce({
+      id: 'any_id',
+      name: 'any_name'
+    })
+
+    await sut.perform({ token })
+
+    expect(userAccountRepo.updateFromFacebook).toHaveBeenCalledWith({
+      id: 'any_id',
+      name: 'any_name',
+      facebookId: 'any_fb_id'
+    })
+    expect(userAccountRepo.updateFromFacebook).toHaveBeenCalledTimes(1)
   })
 })
